@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "title": "Sample issue - login broken",
+    "description": "Users cannot login with correct credentials",
+    "status": "Open",
+    "priority": "High",
+    "assignee": "Alice",
+    "createdAt": "2025-09-20T10:00:00",
+    "updatedAt": "2025-09-21T12:00:00"
+  },
+  {
+    "id": "2",
+    "title": "UI alignment on dashboard",
+    "description": "Cards overlap on small screens",
+    "status": "In Progress",
+    "priority": "Medium",
+    "assignee": "Bob",
+    "createdAt": "2025-09-18T09:30:00",
+    "updatedAt": "2025-09-19T14:20:00"
+  }
+]
