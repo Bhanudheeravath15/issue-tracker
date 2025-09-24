@@ -1,1 +1,22 @@
-<p>issue-detail works!</p>
+<div class="detail-container">
+  <div *ngIf="loading" class="loading">Loading issue...</div>
+  <div *ngIf="error" class="error">{{error}}</div>
+  <mat-card *ngIf="issue && !loading" class="issue-card">
+    <mat-card-header>
+      <mat-card-title>{{issue.title}}</mat-card-title>
+      <mat-card-subtitle>
+        Status: <span [ngClass]="'status-' + issue.status">{{issue.status | titlecase}}</span> |
+        Priority: <span [ngClass]="'priority-' + issue.priority">{{issue.priority | titlecase}}</span>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Description:</strong><br>{{issue.description}}</p>
+      <p><strong>Assignee:</strong> {{issue.assignee || 'Unassigned'}}</p>
+      <p><strong>Created:</strong> {{issue.createdAt | date:'medium'}}</p>
+      <p><strong>Last Updated:</strong> {{issue.updatedAt | date:'medium'}}</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="onBack()">Back to List</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

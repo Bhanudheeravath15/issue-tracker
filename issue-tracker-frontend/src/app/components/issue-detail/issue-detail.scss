@@ -1,0 +1,6 @@
+.detail-container { padding: 20px; max-width: 600px; margin: 0 auto; }
+.loading, .error { text-align: center; padding: 40px; }
+.error { color: red; }
+.issue-card { margin-bottom: 20px; }
+.status-open { color: green; } .status-in-progress { color: orange; } .status-closed { color: gray; }
+.priority-high { color: red; font-weight: bold; } .priority-medium { color: orange; } .priority-low { color: green; }

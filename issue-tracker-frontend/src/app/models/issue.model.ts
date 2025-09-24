@@ -16,3 +16,8 @@ export interface PaginatedIssues {
   total: number;
   totalPages: number;
 }
+
+export interface DialogData {
+  mode: 'create' | 'edit';
+  issue?: Issue;
+}
