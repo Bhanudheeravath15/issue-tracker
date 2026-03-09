@@ -83,4 +83,6 @@ export class IssuesListComponent implements OnInit {
     this.loadIssues();
   }
 
-  onSortChange(sort)
+  onSortChange(sort: any): void {
+  this.sort = sort;
+}
