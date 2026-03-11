@@ -16,8 +16,6 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
     CommonModule,
     ReactiveFormsModule,
     TitleCasePipe,
-
-    // Material
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -30,11 +28,47 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
 export class IssueFormComponent {
   form: FormGroup;
 
-  // Example dropdown data — align these with your backend enums if needed
   statuses   = ['open', 'in progress', 'resolved', 'closed'];
   priorities = ['low', 'medium', 'high', 'urgent'];
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<IssueFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.form = this.fb.group({
+      title:       [data?.title ?? '', [Validators.required, Validators.maxLength(120)]],
+      description: [data?.description ?? '', [Validators.required, Validators.maxLength(2000)]],
+      status:      [data?.status ?? 'open', [Validators.required]],
+      priority:    [data?.priority ?? 'medium', [Validators.required]],
+      assignee:    [data?.assignee ?? '', [Validators.maxLength(100)]]
+    });
+  }
 
+  // easy access to form controls in the template
+  get f() {
+    return this.form.controls;
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.dialogRef.close(this.form.value);
+  }
+
+  onCancel(): void {
+    this.dialogRef.close(null);
+  }
+
+  getErrorMessage(controlName: keyof typeof this.form.controls): string {
+    const ctrl = this.form.get(controlName);
+    if (!ctrl) return '';
+    if (ctrl.hasError('required'))  return 'This field is required';
+    if (ctrl.hasError('maxlength')) return 'Too long';
+    if (ctrl.hasError('minlength')) return 'Too short';
+    if (ctrl.hasError('email'))     return 'Invalid email';
+    return 'Invalid value';
+  }
+}

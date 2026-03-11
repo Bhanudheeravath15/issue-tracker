@@ -1,58 +1,65 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { IssueService } from '../../services/issue.service';
-import { PaginatedIssues, Issue } from '../../models/issue.model';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
+
+import { IssueService, PaginatedIssues, Issue } from '../../services/issue.service';
 import { IssueFormComponent } from '../issue-form/issue-form.component';
 
 @Component({
   selector: 'app-issues-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatButtonModule, MatIconModule, MatDialogModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    // Material (include the ones you actually use in the template)
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatDialogModule,
+    MatButtonModule
+  ],
   templateUrl: './issues-list.component.html',
   styleUrls: ['./issues-list.component.scss']
 })
 export class IssuesListComponent implements OnInit {
+  // table data
   issues: Issue[] = [];
-  paginatedData!: PaginatedIssues;
-  displayedColumns: string[] = ['id', 'title', 'status', 'priority', 'assignee', 'updatedAt', 'actions'];
+  paginatedData: PaginatedIssues | null = null;
 
+  // paging & totals
   page = 1;
   pageSize = 10;
   totalPages = 0;
+
+  // filters
   searchTerm = '';
-  statusFilter = '';
-  priorityFilter = '';
-  assigneeFilter = '';
-  sortBy = 'updatedAt';
+  statusFilter: string | null = null;
+  priorityFilter: string | null = null;
+  assigneeFilter: string | null = null;
+
+  // sorting
+  sortBy: string = 'createdAt';
   sortOrder: 'asc' | 'desc' = 'desc';
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  statuses = ['open', 'in-progress', 'closed'];
-  priorities = ['low', 'medium', 'high'];
+  displayedColumns: string[] = ['title', 'status', 'priority', 'assignee', 'createdAt', 'actions'];
 
   constructor(
     private issueService: IssueService,
-    private router: Router,
-    public dialog: MatDialog
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.loadIssues();
   }
 
+  // ✅ Step 5 fix: use a compatible subscribe signature
+  // Option A (typed) — if your IssueService.getIssues() returns Observable<PaginatedIssues>
   loadIssues(): void {
     this.issueService.getIssues({
       page: this.page,
@@ -63,15 +70,15 @@ export class IssuesListComponent implements OnInit {
       assignee: this.assigneeFilter || undefined,
       sortBy: this.sortBy,
       sortOrder: this.sortOrder
-    }).subscribe({
-      next: (data: PaginatedIssues) => {
-        this.paginatedData = data;
-        this.issues = data.issues;
-        this.totalPages = data.totalPages;
-      },
-      error: (err: any) => console.error('Error loading issues:', err)
+    }).subscribe((data: PaginatedIssues) => {
+      this.paginatedData = data;
+      this.issues = data.issues;
+      this.totalPages = data.totalPages;
     });
   }
+
+  // If your service currently returns Observable<any>, you can instead use:
+  // }).subscribe((data: any) => { ... });
 
   onSearch(): void {
     this.page = 1;
@@ -83,8 +90,29 @@ export class IssuesListComponent implements OnInit {
     this.loadIssues();
   }
 
-  onSortChange(sort: any): void {
-    this.sort = sort;
+  onSortChange(sort: Sort): void {
+    if (sort.active) this.sortBy = sort.active;
+    if (sort.direction) this.sortOrder = sort.direction as 'asc' | 'desc';
+    this.loadIssues();
+  }
+
+  onPageChange(page: number): void {
+    this.page = page;
+    this.loadIssues();
+  }
+
+  // (Optional) Open create dialog and refresh on success
+  openCreateDialog(): void {
+    const ref = this.dialog.open(IssueFormComponent, {
+      width: '600px',
+      data: {} // pass defaults if needed
+    });
+
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        this.issueService.createIssue(result).subscribe(() => this.loadIssues());
+      }
+    });
   }
 }
 
