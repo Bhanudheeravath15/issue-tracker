@@ -1,10 +1,9 @@
-<!-- src/app/components/issue-form/issue-form.component.html -->
 <mat-dialog-content class="form-content">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Title</mat-label>
       <input matInput formControlName="title" placeholder="Enter title" />
-      <mat-error *ngIf="f.title.invalid && (f.title.dirty || f.title.touched)">
+      <mat-error *ngIf="f['title'].invalid && (f['title'].dirty || f['title'].touched)">
         {{ getErrorMessage('title') }}
       </mat-error>
     </mat-form-field>
@@ -12,7 +11,7 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Description</mat-label>
       <textarea matInput rows="4" formControlName="description" placeholder="Describe the issue"></textarea>
-      <mat-error *ngIf="f.description.invalid && (f.description.dirty || f.description.touched)">
+      <mat-error *ngIf="f['description'].invalid && (f['description'].dirty || f['description'].touched)">
         {{ getErrorMessage('description') }}
       </mat-error>
     </mat-form-field>
@@ -38,7 +37,7 @@
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Assignee</mat-label>
       <input matInput formControlName="assignee" placeholder="Assignee name" />
-      <mat-error *ngIf="f.assignee.invalid && (f.assignee.dirty || f.assignee.touched)">
+      <mat-error *ngIf="f['assignee'].invalid && (f['assignee'].dirty || f['assignee'].touched)">
         {{ getErrorMessage('assignee') }}
       </mat-error>
     </mat-form-field>
