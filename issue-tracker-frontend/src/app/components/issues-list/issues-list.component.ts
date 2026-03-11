@@ -84,5 +84,7 @@ export class IssuesListComponent implements OnInit {
   }
 
   onSortChange(sort: any): void {
-  this.sort = sort;
+    this.sort = sort;
+  }
 }
+

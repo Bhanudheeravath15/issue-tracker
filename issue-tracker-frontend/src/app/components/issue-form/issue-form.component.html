@@ -1,42 +1,53 @@
-<h2 mat-dialog-title>{{title}}</h2>
+<!-- src/app/components/issue-form/issue-form.component.html -->
 <mat-dialog-content class="form-content">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Title</mat-label>
-      <input matInput formControlName="title" placeholder="Enter issue title">
-      <mat-error *ngIf="getErrorMessage('title')">{{getErrorMessage('title')}}</mat-error>
+      <input matInput formControlName="title" placeholder="Enter title" />
+      <mat-error *ngIf="f.title.invalid && (f.title.dirty || f.title.touched)">
+        {{ getErrorMessage('title') }}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" rows="4" placeholder="Enter issue description"></textarea>
-      <mat-error *ngIf="getErrorMessage('description')">{{getErrorMessage('description')}}</mat-error>
+      <textarea matInput rows="4" formControlName="description" placeholder="Describe the issue"></textarea>
+      <mat-error *ngIf="f.description.invalid && (f.description.dirty || f.description.touched)">
+        {{ getErrorMessage('description') }}
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
-        <mat-option *ngFor="let status of statuses" [value]="status">{{status | titlecase}}</mat-option>
+        <mat-option *ngFor="let status of statuses" [value]="status">
+          {{ status | titlecase }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Priority</mat-label>
       <mat-select formControlName="priority">
-        <mat-option *ngFor="let priority of priorities" [value]="priority">{{priority | titlecase}}</mat-option>
+        <mat-option *ngFor="let priority of priorities" [value]="priority">
+          {{ priority | titlecase }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Assignee</mat-label>
-      <input matInput formControlName="assignee" type="email" placeholder="Enter assignee email">
-      <mat-error *ngIf="getErrorMessage('assignee')">{{getErrorMessage('assignee')}}</mat-error>
+      <input matInput formControlName="assignee" placeholder="Assignee name" />
+      <mat-error *ngIf="f.assignee.invalid && (f.assignee.dirty || f.assignee.touched)">
+        {{ getErrorMessage('assignee') }}
+      </mat-error>
     </mat-form-field>
   </form>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="onSubmit()">
-    Save Issue
+  <button mat-button type="button" (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid" (click)="onSubmit()">
+    Save
   </button>
 </mat-dialog-actions>
