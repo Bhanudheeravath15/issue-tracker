@@ -1,6 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormControl
+} from '@angular/forms';
 
 // Angular Material
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +14,16 @@ import { MatInputModule }      from '@angular/material/input';
 import { MatSelectModule }     from '@angular/material/select';
 import { MatButtonModule }     from '@angular/material/button';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+type FormKeys = 'title' | 'description' | 'status' | 'priority' | 'assignee';
+
+type IssueFormGroup = {
+  title: FormControl<string>;
+  description: FormControl<string>;
+  status: FormControl<string>;
+  priority: FormControl<string>;
+  assignee: FormControl<string>;
+};
 
 @Component({
   selector: 'app-issue-form',
@@ -26,7 +42,7 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
   styleUrls: ['./issue-form.component.scss']
 })
 export class IssueFormComponent {
-  form: FormGroup;
+  form: FormGroup<IssueFormGroup>;
 
   statuses   = ['open', 'in progress', 'resolved', 'closed'];
   priorities = ['low', 'medium', 'high', 'urgent'];
@@ -36,17 +52,18 @@ export class IssueFormComponent {
     private dialogRef: MatDialogRef<IssueFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.form = this.fb.group({
-      title:       [data?.title ?? '', [Validators.required, Validators.maxLength(120)]],
-      description: [data?.description ?? '', [Validators.required, Validators.maxLength(2000)]],
-      status:      [data?.status ?? 'open', [Validators.required]],
-      priority:    [data?.priority ?? 'medium', [Validators.required]],
-      assignee:    [data?.assignee ?? '', [Validators.maxLength(100)]]
+    // Use nonNullable controls so each control is FormControl<string> (not string | null)
+    this.form = this.fb.group<IssueFormGroup>({
+      title:       this.fb.nonNullable.control<string>(data?.title ?? '', [Validators.required, Validators.maxLength(120)]),
+      description: this.fb.nonNullable.control<string>(data?.description ?? '', [Validators.required, Validators.maxLength(2000)]),
+      status:      this.fb.nonNullable.control<string>(data?.status ?? 'open', [Validators.required]),
+      priority:    this.fb.nonNullable.control<string>(data?.priority ?? 'medium', [Validators.required]),
+      assignee:    this.fb.nonNullable.control<string>(data?.assignee ?? '', [Validators.maxLength(100)])
     });
   }
 
-  // easy access to form controls in the template
-  get f() {
+  // Returns a properly typed controls map -> dot access (f.title) is allowed in the template
+  get f(): IssueFormGroup {
     return this.form.controls;
   }
 
@@ -62,9 +79,10 @@ export class IssueFormComponent {
     this.dialogRef.close(null);
   }
 
-  getErrorMessage(controlName: keyof typeof this.form.controls): string {
+  getErrorMessage(controlName: FormKeys): string {
     const ctrl = this.form.get(controlName);
     if (!ctrl) return '';
+
     if (ctrl.hasError('required'))  return 'This field is required';
     if (ctrl.hasError('maxlength')) return 'Too long';
     if (ctrl.hasError('minlength')) return 'Too short';

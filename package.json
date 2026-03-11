@@ -3,5 +3,8 @@
     "@angular/animations": "^20.3.1",
     "@angular/cdk": "^20.2.4",
     "@angular/material": "^20.2.4"
+  },
+  "devDependencies": {
+    "@angular/cli": "^21.2.1"
   }
 }
