@@ -1,6 +1,6 @@
 // src/environments/environment.ts
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://issue-tracker-3-oay9.onrender.com'
+  apiBaseUrl: 'http://localhost:5000'
 };
 

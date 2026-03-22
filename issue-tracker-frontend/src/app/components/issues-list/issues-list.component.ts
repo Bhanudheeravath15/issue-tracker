@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
@@ -22,7 +23,8 @@ import { IssueFormComponent } from '../issue-form/issue-form.component';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    RouterModule
   ],
   templateUrl: './issues-list.component.html',
   styleUrls: ['./issues-list.component.scss']

@@ -40,7 +40,11 @@ issues_db = [
     }
 ]
 
-@app.route('/issues', methods=['GET'])
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "ok"})
+
+@app.route('/api/issues', methods=['GET'])
 def get_issues():
     page = int(request.args.get('page', 1))
     page_size = int(request.args.get('pageSize', 10))
@@ -91,14 +95,14 @@ def get_issues():
         'totalPages': (total + page_size - 1) // page_size
     })
 
-@app.route('/issues/<issue_id>', methods=['GET'])
+@app.route('/api/issues/<issue_id>', methods=['GET'])
 def get_issue(issue_id):
     issue = next((issue for issue in issues_db if issue['id'] == issue_id), None)
     if issue:
         return jsonify(issue)
     return jsonify({'error': 'Issue not found'}), 404
 
-@app.route('/issues', methods=['POST'])
+@app.route('/api/issues', methods=['POST'])
 def create_issue():
     data = request.json
     if not data or not data.get('title') or not data.get('description'):
@@ -117,7 +121,7 @@ def create_issue():
     issues_db.append(new_issue)
     return jsonify(new_issue), 201
 
-@app.route('/issues/<issue_id>', methods=['PUT'])
+@app.route('/api/issues/<issue_id>', methods=['PUT'])
 def update_issue(issue_id):
     issue = next((issue for issue in issues_db if issue['id'] == issue_id), None)
     if not issue:
@@ -141,5 +145,5 @@ def update_issue(issue_id):
 import os
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
