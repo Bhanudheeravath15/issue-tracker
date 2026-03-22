@@ -59,9 +59,13 @@ Sample Data: 3 issues loaded on startup (e.g., "Login Bug" - open/high, "UI Glit
    - Ensure backend is running (port 5000).
    - Open browser: http://localhost:4200/issues (redirects from root; shows table with 3 issues).
 
-In GitHub Codespaces:
-- Backend: Terminal 1 (root) → `python app.py` (forward port 5000).
-- Frontend: Terminal 2 → `cd issue-tracker-frontend && ng serve --port 4200` (forward port 4200 → Open in browser).
+62: In GitHub Codespaces:
+63: - Backend: Terminal 1 (root) → `cd api && flask run` (forward port 5000).
+64: - Frontend: Terminal 2 → `cd issue-tracker-frontend && npm start` (forward port 4200 → Open in browser).
+65: 
+66: ### Vercel Deployment
+67: The application is configured as a Monorepo for Vercel. 
+68: Pushing to the `main` branch automatically deploys both the Angular frontend and the `/api` Python backend to a single domain.
 
 ## API Documentation
 
